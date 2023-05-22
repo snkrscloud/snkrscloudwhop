@@ -6,6 +6,9 @@ services:
       context: .
       dockerfile: Dockerfile
     ports:
-      - 3000:80
-    env_file:
-      - stack.env
+      - 8080:8080
+    volumes:
+      - app-data:/app/data
+
+volumes:
+  app-data:
