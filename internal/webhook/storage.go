@@ -11,6 +11,7 @@ import (
 // how the user is stored in the database
 type UserDB struct {
 	ID        primitive.ObjectID `bson:"_id,omitempty"`
+	UserID    string             `bson:"user_id"`
 	Username  string             `bson:"username"`
 	Email     string             `bson:"email"`
 	AvatarURL string             `bson:"avatar_url"`
@@ -27,17 +28,25 @@ func NewWebhookStorage(db *mongo.Database) *WebhookStorage {
 	}
 }
 
+func (s *WebhookStorage) createUser(id, username, email, avatarUrl string, valid bool, ctx context.Context) error {
+	collection := s.db.Collection("users")
+
+	// create the user
+	_, err := collection.InsertOne(ctx, UserDB{
+		UserID:    id,
+		Username:  username,
+		Email:     email,
+		AvatarURL: avatarUrl,
+		Valid:     valid,
+	})
+	return err
+}
+
 func (s *WebhookStorage) updateUser(id, username, email, avatarUrl string, valid bool, ctx context.Context) error {
 	collection := s.db.Collection("users")
 
-	// convert the id string to an ObjectID
-	oid, err := primitive.ObjectIDFromHex(id)
-	if err != nil {
-		return err
-	}
-
 	// create the filter
-	filter := bson.M{"_id": oid}
+	filter := bson.M{"user_id": id}
 
 	// create the update
 	update := bson.M{
@@ -50,6 +59,6 @@ func (s *WebhookStorage) updateUser(id, username, email, avatarUrl string, valid
 	}
 
 	// update the user
-	_, err = collection.UpdateOne(ctx, filter, update)
+	_, err := collection.UpdateOne(ctx, filter, update)
 	return err
 }

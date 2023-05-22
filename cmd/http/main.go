@@ -8,10 +8,10 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/gofiber/fiber/v2/middleware/logger"
-	"github.com/robin-samuel/snkrscloudwhop/config"
-	"github.com/robin-samuel/snkrscloudwhop/internal/storage"
-	"github.com/robin-samuel/snkrscloudwhop/internal/webhook"
-	"github.com/robin-samuel/snkrscloudwhop/pkg/shutdown"
+	"github.com/snkrscloud/snkrscloudwhop/config"
+	"github.com/snkrscloud/snkrscloudwhop/internal/storage"
+	"github.com/snkrscloud/snkrscloudwhop/internal/webhook"
+	"github.com/snkrscloud/snkrscloudwhop/pkg/shutdown"
 )
 
 func main() {

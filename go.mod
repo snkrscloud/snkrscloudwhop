@@ -1,4 +1,4 @@
-module github.com/robin-samuel/snkrscloudwhop
+module github.com/snkrscloud/snkrscloudwhop
 
 go 1.20
 

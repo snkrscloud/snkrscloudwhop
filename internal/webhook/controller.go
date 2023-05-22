@@ -1,8 +1,6 @@
 package webhook
 
 import (
-	"fmt"
-
 	"github.com/gofiber/fiber/v2"
 )
 
@@ -42,12 +40,24 @@ func (t *WebhookController) handleWebhook(c *fiber.Ctx) error {
 
 	data := webhook.Data
 
-	// create the Webhook
-	err := t.storage.updateUser(data.User.ID, data.User.Username, data.User.Email, data.User.ProfilePicURL, data.Valid, c.Context())
-	if err != nil {
-		fmt.Println(err)
-		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
-			"message": "Failed to create Webhook",
+	switch webhook.Action {
+	case "membership.went_valid":
+		err := t.storage.createUser(data.User.ID, data.User.Username, data.User.Email, data.User.ProfilePicURL, data.Valid, c.Context())
+		if err != nil {
+			return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+				"message": "Failed to create User",
+			})
+		}
+	case "membership.went_invalid":
+		err := t.storage.updateUser(data.User.ID, data.User.Username, data.User.Email, data.User.ProfilePicURL, data.Valid, c.Context())
+		if err != nil {
+			return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+				"message": "Failed to update User",
+			})
+		}
+	default:
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"message": "Invalid action",
 		})
 	}
 
