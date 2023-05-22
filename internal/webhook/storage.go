@@ -6,6 +6,7 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
 // how the user is stored in the database
@@ -28,20 +29,6 @@ func NewWebhookStorage(db *mongo.Database) *WebhookStorage {
 	}
 }
 
-func (s *WebhookStorage) createUser(id, username, email, avatarUrl string, valid bool, ctx context.Context) error {
-	collection := s.db.Collection("users")
-
-	// create the user
-	_, err := collection.InsertOne(ctx, UserDB{
-		UserID:    id,
-		Username:  username,
-		Email:     email,
-		AvatarURL: avatarUrl,
-		Valid:     valid,
-	})
-	return err
-}
-
 func (s *WebhookStorage) updateUser(id, username, email, avatarUrl string, valid bool, ctx context.Context) error {
 	collection := s.db.Collection("users")
 
@@ -59,6 +46,6 @@ func (s *WebhookStorage) updateUser(id, username, email, avatarUrl string, valid
 	}
 
 	// update the user
-	_, err := collection.UpdateOne(ctx, filter, update)
+	_, err := collection.UpdateOne(ctx, filter, update, options.Update().SetUpsert(true))
 	return err
 }
