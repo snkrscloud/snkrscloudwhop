@@ -1,7 +1,7 @@
 package webhook
 
 import (
-	"log"
+	"fmt"
 
 	"github.com/gofiber/fiber/v2"
 )
@@ -45,7 +45,7 @@ func (t *WebhookController) handleWebhook(c *fiber.Ctx) error {
 	// create the Webhook
 	err := t.storage.updateUser(data.User.ID, data.User.Username, data.User.Email, data.User.ProfilePicURL, data.Valid, c.Context())
 	if err != nil {
-		log.Println(err)
+		fmt.Println(err)
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 			"message": "Failed to create Webhook",
 		})
